@@ -93,7 +93,7 @@ jobs:
 
         - name: Configure Helm Repository
           run: |
-            helm repo add chartmuseum "${{ env.NEXUS_HELM_REPO }}" \
+            helm repo add chartmuseum "https://${{ env.NEXUS_HELM_REPO }}" \
               --username="${{ env.NEXUS_HELM_REPO_USER }}" \
               --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
 
