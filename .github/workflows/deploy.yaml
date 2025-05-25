@@ -19,6 +19,8 @@ jobs:
   build_and_push_to_docker_hub:
       name: Push Docker image to DockerHub
       runs-on: ubuntu-latest
+      outputs: 
+        DATE: ${{ steps.get-date.outputs.DATE }}
       steps:
         - name: Check out the repo
           # Получение исходного кода из репозитория:
@@ -91,9 +93,9 @@ jobs:
 
         - name: Configure Helm Repository
           run: |
-            helm repo add chartmuseum ${{ env.NEXUS_HELM_REPO }} \
-              --username ${{ secrets.NEXUS_HELM_REPO_USER }} \
-              --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
+            helm repo add chartmuseum "${{ env.NEXUS_HELM_REPO }}" \
+              --username="${{ env.NEXUS_HELM_REPO_USER }}" \
+              --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
 
         - name: Update Chart Version
           id: versioning
@@ -107,7 +109,7 @@ jobs:
           run: |
             helm dependency update ./sausage-store-chart
             helm package ./sausage-store-chart -d ./packaged-chart
-            helm push ./packaged-chart/sausage-store-chart-*.tgz chartmuseum
+            helm push ./packaged-chart/sausage-store-chart-*.tgz "${{ env.NEXUS_HELM_REPO }}"
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт
   deploy_helm_chart_to_kubernetes:
       name: Deploy Helm Chart To Kubernetes
@@ -130,9 +132,9 @@ jobs:
 
         - name: Add Helm Repository
           run: |
-            helm repo add chartmuseum ${{ env.NEXUS_HELM_REPO }} \
-              --username ${{ secrets.NEXUS_HELM_REPO_USER }} \
-              --password ${{ secrets.NEXUS_HELM_REPO_PASSWORD }}
+            helm repo add chartmuseum "${{ env.NEXUS_HELM_REPO }}" \
+              --username "${{ env.NEXUS_HELM_REPO_USER }}" \
+              --password "${{ env.NEXUS_HELM_REPO_PASSWORD }}"
             helm repo update
 
         - name: Deploy to Cluster
