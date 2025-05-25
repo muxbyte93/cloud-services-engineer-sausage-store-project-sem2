@@ -110,7 +110,7 @@ jobs:
             helm dependency update ./sausage-store-chart
             helm package ./sausage-store-chart -d ./packaged-chart
             helm push ./packaged-chart/sausage-store-chart-*.tgz chartmuseum
-  # Деплоим приложения в кластер Kubernetes с помощью helm-чарт
+  # Деплоим приложения в кластер Kubernetes с помощью helm-чарт.
   deploy_helm_chart_to_kubernetes:
       name: Deploy Helm Chart To Kubernetes
       runs-on: ubuntu-latest
