@@ -89,18 +89,21 @@ jobs:
             version: v3.14.2
 
         - name: Install helm-push plugin
-          run: helm plugin install https://github.com/chartmuseum/helm-push.git
+          run: |
+            helm plugin uninstall push || true
+            helm plugin install https://github.com/chartmuseum/helm-push.git
 
         - name: Configure Helm Repository
           run: |
             helm repo add chartmuseum "https://${{ env.NEXUS_HELM_REPO }}" \
               --username="${{ env.NEXUS_HELM_REPO_USER }}" \
               --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
+            helm repo update
 
         - name: Update Chart Version
           id: versioning
           run: |
-            CURRENT_VERSION=$(helm show chart ./sausage-store-chart | yq '.version')
+            CURRENT_VERSION=$(yq e '.version' ./sausage-store-chart/Chart.yaml)
             NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1; print}' OFS=.)
             echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
             yq e -i ".version = \"$NEW_VERSION\"" ./sausage-store-chart/Chart.yaml
@@ -108,8 +111,12 @@ jobs:
         - name: Push Helm Chart
           run: |
             helm dependency update ./sausage-store-chart
-            helm package ./sausage-store-chart -d ./packaged-chart
-            helm cm-push ./packaged-chart/sausage-store-chart-*.tgz chartmuseum
+            mkdir -p ./packaged-chart
+            helm package ./sausage-store-chart -d ./packaged-chart --dependency-update
+            ls -la ./packaged-chart
+            helm cm-push ./packaged-chart/sausage-store-chart-*.tgz "https://${{ env.NEXUS_HELM_REPO }}" \
+              --username="${{ env.NEXUS_HELM_REPO_USER }}" \
+              --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт.
   deploy_helm_chart_to_kubernetes:
       name: Deploy Helm Chart To Kubernetes
