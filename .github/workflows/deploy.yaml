@@ -95,7 +95,7 @@ jobs:
 
         - name: Configure Helm Repository
           run: |
-            helm repo add chartmuseum "https://${{ env.NEXUS_HELM_REPO }}" \
+            helm repo add chartmuseum "${{ env.NEXUS_HELM_REPO }}" \
               --username="${{ env.NEXUS_HELM_REPO_USER }}" \
               --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
             helm repo update
@@ -114,7 +114,7 @@ jobs:
             mkdir -p ./packaged-chart
             helm package ./sausage-store-chart -d ./packaged-chart --dependency-update
             ls -la ./packaged-chart
-            helm cm-push ./packaged-chart/sausage-store-chart-*.tgz "https://${{ env.NEXUS_HELM_REPO }}" \
+            helm cm-push ./packaged-chart/sausage-store-*.tgz "${{ env.NEXUS_HELM_REPO }}" \
               --username="${{ env.NEXUS_HELM_REPO_USER }}" \
               --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт.
@@ -147,7 +147,7 @@ jobs:
         - name: Deploy to Cluster
           run: |
             helm upgrade --install sausage-store \
-              chartmuseum/sausage-store-chart \
+              chartmuseum/sausage-store \
               --version ${{ needs.add_helm_chart_to_nexus.outputs.chart_version }} \
               --namespace ${{ env.SAUSAGE_STORE_NAMESPACE }} \
               --set-string backend.image.tag="${{ needs.build_and_push_to_docker_hub.outputs.DATE }}-${{ github.sha }}" \
