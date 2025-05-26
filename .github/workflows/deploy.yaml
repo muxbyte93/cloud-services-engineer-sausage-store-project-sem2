@@ -77,6 +77,8 @@ jobs:
       needs: build_and_push_to_docker_hub
       outputs:
         chart_version: ${{ steps.versioning.outputs.NEW_VERSION }}
+        date: ${{ needs.build_and_push_to_docker_hub.outputs.DATE }}
+
 
       steps:
         - name: Check out the repo
@@ -117,6 +119,7 @@ jobs:
               --context-path="/repository/muxbyte93-sausage-store-project-sem2" \
               --username="${{ env.NEXUS_HELM_REPO_USER }}" \
               --password="${{ env.NEXUS_HELM_REPO_PASSWORD }}"
+ 
   # Деплоим приложения в кластер Kubernetes с помощью helm-чарт.
   deploy_helm_chart_to_kubernetes:
       name: Deploy Helm Chart To Kubernetes
@@ -150,9 +153,9 @@ jobs:
               chartmuseum/sausage-store \
               --version ${{ needs.add_helm_chart_to_nexus.outputs.chart_version }} \
               --namespace ${{ env.SAUSAGE_STORE_NAMESPACE }} \
-              --set-string backend.image.tag="${{ needs.build_and_push_to_docker_hub.outputs.DATE }}-${{ github.sha }}" \
-              --set-string frontend.image.tag="${{ needs.build_and_push_to_docker_hub.outputs.DATE }}-${{ github.sha }}" \
-              --set-string backend_report.image.tag="${{ needs.build_and_push_to_docker_hub.outputs.DATE }}-${{ github.sha }}" \
+              --set-string backend.image.tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
+              --set-string frontend.image.tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
+              --set-string backend_report.image.tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}"
               --set global.vault.name="vault" \
               --set global.vault.host="${{ env.VAULT_HOST }}" \
               --set global.vault.vaultToken="${{ env.VAULT_TOKEN }}"
