@@ -17,7 +17,7 @@ frontend:
     path: /
     pathType: Prefix
   containerPort: 80
-  image: wurt83ow/sausage-frontend
+  image: "wurt83ow/sausage-frontend"
   image_tag: latest
   resources:
     requests:
@@ -45,7 +45,7 @@ backend:
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  image: wurt83ow/sausage-backend
+  image: "wurt83ow/sausage-backend"
   image_tag: latest
   imagePullPolicy: Always
   resources:
@@ -85,7 +85,7 @@ backend-report:
     type: Recreate
   service:
     port: 8080
-  image: wurt83ow/sausage-backend-report
+  image: "wurt83ow/sausage-backend-report"
   image_tag: latest
   imagePullPolicy: Always
   resources:
