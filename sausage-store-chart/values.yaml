@@ -51,16 +51,16 @@ backend:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "25m"
+      cpu: "100m"
     limits:
       memory: "512Mi"
-      cpu: "25m"
+      cpu: "500m"
   containerPort: 8080
   livenessProbe:
     httpGet:
       path: /actuator/health
       port: 8080
-    initialDelaySeconds: 30
+    initialDelaySeconds: 60
     periodSeconds: 10
     failureThreshold: 3
     timeoutSeconds: 5 
