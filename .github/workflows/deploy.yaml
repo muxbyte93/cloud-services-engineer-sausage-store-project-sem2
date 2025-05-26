@@ -155,7 +155,7 @@ jobs:
               --namespace ${{ env.SAUSAGE_STORE_NAMESPACE }} \
               --set-string backend.image_tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
               --set-string frontend.image_tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
-              --set-string 'backend-report.image_tag'="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
+              --set-string backend-report.image_tag="${{ needs.add_helm_chart_to_nexus.outputs.date }}-${{ github.sha }}" \
               --set global.vault.name="vault" \
               --set global.vault.host="${{ env.VAULT_HOST }}" \
               --set global.vault.vaultToken="${{ env.VAULT_TOKEN }}"
