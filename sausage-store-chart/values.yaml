@@ -78,15 +78,14 @@ backend:
             memory: "1Gi"
 
 
-backend-report:
-  image_tag: latest
+backend-report:  
   revisionHistoryLimit: 10
   replicas: 1
   strategy:
     type: Recreate
   service:
     port: 8080
-  image: sausage-backend-report
+  image: wurt83ow/sausage-backend-report
   image_tag: latest
   imagePullPolicy: Always
   resources:
