@@ -147,7 +147,7 @@ jobs:
               --password "${{ env.NEXUS_HELM_REPO_PASSWORD }}"
             helm repo update
 
-        - name: Deploy to Cluster
+        - name: Deploy to Cluster.
           run: |
             helm upgrade --install sausage-store \
               chartmuseum/sausage-store \
