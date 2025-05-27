@@ -121,7 +121,7 @@ infra:
     containerPort: 5432
   mongodb:
     env:
-      MONGO_INITDB_ROOT_USERNAME: mgroot
-      MONGO_INITDB_ROOT_PASSWORD: mgrootpassword
+      MONGO_INITDB_ROOT_USERNAME: reports
+      MONGO_INITDB_ROOT_PASSWORD: reportspassword
       MONGO_INITDB_DATABASE: sausage-store
     containerPort: 27017
